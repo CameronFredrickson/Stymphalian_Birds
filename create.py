@@ -3,9 +3,10 @@ import sys
 import io
 import shutil
 
-# ADD DOC_STRINGS
 
 def create_project(project_name):
+	"""Creates project directory.
+	"""
 	try:
 		retcode = subprocess.call("mkdir " + project_name, shell=True)
 		if retcode < 0:
@@ -17,6 +18,8 @@ def create_project(project_name):
 
 
 def create_subdirectories(project_name):
+	"""Creates srcs, srcs/includes, bin, test, build directories in the project directory.
+	"""
 	try:
 		retcode = subprocess.call("mkdir " + 
 			project_name + "/bin " + project_name + "/srcs " + 
@@ -31,6 +34,8 @@ def create_subdirectories(project_name):
 
 
 def create_gitignore(project_name):
+	"""Creates a .gitignore in the project directory.
+	"""
 	with io.FileIO(".gitignore", "w") as file:
 		file.write("# Directories #\n###################\nbin/\n\n"
 				"# OS generated files #\n###################\n"
@@ -42,6 +47,10 @@ def create_gitignore(project_name):
 
 
 def get_c_library(project_name):
+	"""Clones the git repository containing a c library
+		from https://github.com/CameronFredrickson/libft and removes the .git
+		from the cloned directory. 
+	"""
 	try:
 		retcode = subprocess.call("git clone "
 			"https://github.com/CameronFredrickson/libft " + project_name + "/libft"
@@ -49,18 +58,28 @@ def get_c_library(project_name):
 		if retcode < 0:
 			print("Failed to clone library from github. return code: %d", retcode)
 		else:
-			print "Cloned library from github."
+			print "Cloned libft from github."
 	except OSError as e:
-		print("Execution failed in get_c_library: ", e)
+		print("Execution failed in get_c_library, 'git clone': ", e)
+	try:
+		retcode = subprocess.call("rm -rf " + project_name + "/libft/.git", shell=True)
+		if retcode < 0:
+			print("Failed to remove .git. return code: %d", retcode)
+		else:	
+			print "Removed .git from libft."
+	except OSError as e:
+		print("Execution failed in get_c_library, 'rm .git':")
 
 
 def create_makefile(project_name):
+	"""Creates a main.c in scrs and a simple Makefile.
+	"""
 	with io.FileIO("main.c", "w") as file:
 		file.write("int	main()\n{\n\treturn (0);\n}")
 	shutil.move('main.c', project_name + '/srcs')
 	with io.FileIO("Makefile", "w") as file:
 		file.write("NAME = " + project_name +
-		"SRCS = main.c"
+		"\n\nSRCS = main.c\n\n"
 		"HEADERS = srcs/includes\n\n"
 		"OBJS = 	$(SOURCE:.c=.o)\n\n"
 		"CC = gcc\n\n"
