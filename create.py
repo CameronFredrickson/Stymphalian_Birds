@@ -5,8 +5,7 @@ import shutil
 
 
 def create_project(project_name):
-	"""Creates project directory.
-	"""
+	"""Creates project directory."""
 	try:
 		retcode = subprocess.call("mkdir " + project_name, shell=True)
 		if retcode < 0:
@@ -18,7 +17,8 @@ def create_project(project_name):
 
 
 def create_subdirectories(project_name):
-	"""Creates srcs, srcs/includes, bin, test, build directories in the project directory.
+	"""Creates srcs, srcs/includes, bin, test, and build directories 
+	in the project directory.
 	"""
 	try:
 		retcode = subprocess.call("mkdir " + 
@@ -34,8 +34,7 @@ def create_subdirectories(project_name):
 
 
 def create_gitignore(project_name):
-	"""Creates a .gitignore in the project directory.
-	"""
+	"""Creates a .gitignore in the project directory."""
 	with io.FileIO(".gitignore", "w") as file:
 		file.write("# Directories #\n###################\nbin/\n\n"
 				"# OS generated files #\n###################\n"
@@ -72,8 +71,7 @@ def get_c_library(project_name):
 
 
 def create_makefile(project_name):
-	"""Creates a main.c in scrs and a simple Makefile.
-	"""
+	"""Creates a main.c in scrs and a simple Makefile."""
 	with io.FileIO("main.c", "w") as file:
 		file.write("int	main()\n{\n\treturn (0);\n}")
 	shutil.move('main.c', project_name + '/srcs')
@@ -84,7 +82,7 @@ def create_makefile(project_name):
 		"OBJS = 	$(SOURCE:.c=.o)\n\n"
 		"CC = gcc\n\n"
 		"MEMERROR = -fsanitize=address\n\n"
-		"CFLAGS = -c -Wall -Wextra -Werror\n\n"
+		"CFLAGS = -Wall -Wextra -Werror\n\n"
 		"LIBFLAG = -L\n\n.PHONY: all clean fclean re\n\n"
 		"all: $(NAME)\n\n"
 		"$(NAME):\n\t$(CC) $(CFLAGS) $(SOURCE) -I $(HEADERS)\n\n"
@@ -103,7 +101,7 @@ def main():
 	language = raw_input()
 	create_project(project_name)
 	create_subdirectories(project_name)
-	if language == 'c' or language == 'C' or language == 'C++':
+	if language == 'c' or language == 'C':
 		get_c_library(project_name)
 		create_makefile(project_name)
 	create_gitignore(project_name)
